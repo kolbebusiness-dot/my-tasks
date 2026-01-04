@@ -651,6 +651,13 @@
         }
 
         function startDrag(e, bracketIndex, taskIndex) {
+            // Don't start drag if clicking on checkbox, text, or delete button
+            if (e.target.classList.contains('task-checkbox') || 
+                e.target.classList.contains('task-text') || 
+                e.target.classList.contains('delete-btn')) {
+                return;
+            }
+            
             e.preventDefault();
             
             longPressTimer = setTimeout(() => {
@@ -727,6 +734,7 @@
             if (!isDragging || !draggedTask) return;
             
             e.preventDefault();
+            e.stopPropagation();
             
             const task = brackets[draggedTask.bracketIndex].tasks[draggedTask.taskIndex];
             
@@ -757,6 +765,7 @@
             if (!isDragging || !draggedTask) return;
             
             e.preventDefault();
+            e.stopPropagation();
             
             const task = brackets[draggedTask.bracketIndex].tasks[draggedTask.taskIndex];
             
@@ -782,6 +791,8 @@
 
         function editTaskText(e, bracketIndex, taskIndex) {
             if (isDragging) return;
+            
+            e.stopPropagation();
             
             const span = e.target;
             const currentText = brackets[bracketIndex].tasks[taskIndex].text;
@@ -811,16 +822,25 @@
                 }
             };
             
-            span.addEventListener('blur', saveEdit, { once: true });
-            span.addEventListener('keydown', (event) => {
+            const handleBlur = () => {
+                saveEdit();
+            };
+            
+            const handleKeydown = (event) => {
                 if (event.key === 'Enter') {
                     event.preventDefault();
                     span.blur();
                 } else if (event.key === 'Escape') {
                     span.textContent = currentText;
-                    span.blur();
+                    span.contentEditable = false;
+                    span.classList.remove('editing');
+                    span.removeEventListener('blur', handleBlur);
+                    span.removeEventListener('keydown', handleKeydown);
                 }
-            }, { once: true });
+            };
+            
+            span.addEventListener('blur', handleBlur, { once: true });
+            span.addEventListener('keydown', handleKeydown);
         }
 
         function toggleTask(bracketIndex, taskIndex) {
@@ -908,22 +928,15 @@
                     <ul class="task-list">
                         ${bracket.tasks.map((task, tIndex) => `
                             <li class="task-item ${task.completed ? 'completed' : ''}"
-                                onmousedown="startDrag(event, ${bIndex}, ${tIndex})"
-                                ontouchstart="startDrag(event, ${bIndex}, ${tIndex})"
-                                onmouseup="endDrag(event)"
-                                ontouchend="endDrag(event)"
-                                onmousemove="handleDragOver(event, ${bIndex}, ${tIndex})"
-                                ontouchmove="handleDragOver(event, ${bIndex}, ${tIndex})"
-                                ondrop="handleDrop(event, ${bIndex}, ${tIndex})"
-                                ondragover="event.preventDefault()">
+                                data-bracket="${bIndex}"
+                                data-task="${tIndex}">
                                 <input type="checkbox" class="task-checkbox" 
                                     ${task.completed ? 'checked' : ''} 
-                                    onchange="toggleTask(${bIndex}, ${tIndex})"
-                                    onclick="event.stopPropagation()">
+                                    onchange="toggleTask(${bIndex}, ${tIndex})">
                                 <span class="task-text" 
                                       onclick="editTaskText(event, ${bIndex}, ${tIndex})">${task.text}</span>
                                 <button class="delete-btn" 
-                                        onclick="event.stopPropagation(); deleteTask(${bIndex}, ${tIndex})">×</button>
+                                        onclick="deleteTask(${bIndex}, ${tIndex})">×</button>
                             </li>
                         `).join('')}
                     </ul>
@@ -935,6 +948,31 @@
                 const insigniaContainer = document.getElementById(`bracket-insignia-${bIndex}`);
                 if (insigniaContainer) {
                     insigniaContainer.appendChild(drawRankInsignia(ranks[bracket.rank], 40));
+                }
+            });
+            
+            // Add drag event listeners
+            document.querySelectorAll('.task-item').forEach(item => {
+                const bIndex = parseInt(item.dataset.bracket);
+                const tIndex = parseInt(item.dataset.task);
+                
+                item.addEventListener('mousedown', (e) => startDrag(e, bIndex, tIndex));
+                item.addEventListener('touchstart', (e) => startDrag(e, bIndex, tIndex));
+                item.addEventListener('mouseup', endDrag);
+                item.addEventListener('touchend', endDrag);
+                item.addEventListener('mousemove', (e) => handleDragOver(e, bIndex, tIndex));
+                item.addEventListener('touchmove', (e) => handleDragOver(e, bIndex, tIndex));
+                item.addEventListener('drop', (e) => handleDrop(e, bIndex, tIndex));
+                item.addEventListener('dragover', (e) => e.preventDefault());
+            });
+            
+            document.querySelectorAll('.bracket-section').forEach(section => {
+                const bIndex = parseInt(section.querySelector('.task-item')?.dataset.bracket || -1);
+                if (bIndex >= 0) {
+                    section.addEventListener('mouseover', (e) => handleDragOverBracket(e, bIndex));
+                    section.addEventListener('touchstart', (e) => handleDragOverBracket(e, bIndex));
+                    section.addEventListener('drop', (e) => handleDropOnBracket(e, bIndex));
+                    section.addEventListener('dragover', (e) => e.preventDefault());
                 }
             });
         }
