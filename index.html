@@ -15,35 +15,51 @@
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    #3d4a3e,
+                    #3d4a3e 10px,
+                    #4a5a4b 10px,
+                    #4a5a4b 20px,
+                    #5a6b5c 20px,
+                    #5a6b5c 30px,
+                    #4a5548 30px,
+                    #4a5548 40px
+                );
             min-height: 100vh;
             padding: 20px;
         }
         .container {
             max-width: 600px;
             margin: 0 auto;
-            background: white;
+            background: rgba(42, 48, 42, 0.95);
             border-radius: 12px;
             padding: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            border: 3px solid #5a6b5c;
         }
         h1 {
             text-align: center;
-            color: #1e3c72;
+            color: #d4af37;
             margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         }
         .rank-display {
             text-align: center;
             padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #3d4a3e 0%, #5a6b5c 100%);
             border-radius: 8px;
             margin-bottom: 30px;
-            color: white;
+            color: #d4af37;
             font-size: 24px;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 2px;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            border: 2px solid #7a8b7c;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -52,10 +68,12 @@
         .rank-progress {
             font-size: 14px;
             opacity: 0.9;
+            color: #c4c4c4;
         }
         .rank-insignia {
             width: 80px;
             height: 80px;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.8));
         }
         .input-section {
             display: flex;
@@ -70,46 +88,50 @@
         input[type="text"] {
             flex: 1;
             padding: 12px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #5a6b5c;
             border-radius: 6px;
             font-size: 16px;
             transition: border-color 0.3s;
             min-width: 0;
+            background: rgba(240, 240, 240, 0.95);
         }
         input[type="text"]:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #d4af37;
         }
         select {
             padding: 12px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #5a6b5c;
             border-radius: 6px;
             font-size: 16px;
-            background: white;
+            background: rgba(240, 240, 240, 0.95);
             cursor: pointer;
             width: 100%;
         }
         button {
             padding: 12px 24px;
-            background: #667eea;
-            color: white;
+            background: #5a6b5c;
+            color: #f4f4f4;
             border: none;
             border-radius: 6px;
             font-size: 16px;
             cursor: pointer;
             transition: background 0.3s;
             white-space: nowrap;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         button:hover {
-            background: #5568d3;
+            background: #4a5a4b;
         }
         .reset-btn {
-            background: #ff6b6b;
+            background: #8b4513;
             margin-top: 10px;
             width: 100%;
         }
         .reset-btn:hover {
-            background: #ee5a52;
+            background: #6b3410;
         }
         .bracket-section {
             margin-bottom: 25px;
@@ -119,12 +141,13 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #4a5548 0%, #5a6b5c 100%);
             border-radius: 6px;
             margin-bottom: 10px;
             font-weight: bold;
-            color: #333;
+            color: #d4af37;
             gap: 10px;
+            border: 2px solid #3d4a3e;
         }
         .bracket-title {
             display: flex;
@@ -134,10 +157,11 @@
         .bracket-insignia {
             width: 40px;
             height: 40px;
+            filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.8));
         }
         .bracket-progress {
             font-size: 14px;
-            color: #666;
+            color: #c4c4c4;
         }
         .task-list {
             list-style: none;
@@ -146,14 +170,15 @@
             display: flex;
             align-items: center;
             padding: 12px;
-            background: #fafafa;
+            background: rgba(90, 107, 92, 0.3);
             border-radius: 6px;
             margin-bottom: 8px;
             transition: all 0.3s;
             position: relative;
+            border: 1px solid #5a6b5c;
         }
         .task-item.completed {
-            opacity: 0.6;
+            opacity: 0.5;
             text-decoration: line-through;
         }
         .task-checkbox {
@@ -162,12 +187,14 @@
             margin-right: 12px;
             cursor: pointer;
             flex-shrink: 0;
+            accent-color: #d4af37;
         }
         .task-text {
             flex: 1;
+            color: #e4e4e4;
         }
         .delete-btn {
-            background: #ff4444;
+            background: #8b4513;
             color: white;
             border: none;
             padding: 6px 12px;
@@ -176,9 +203,11 @@
             font-size: 14px;
             margin-left: 10px;
             flex-shrink: 0;
+            text-transform: uppercase;
+            font-weight: bold;
         }
         .delete-btn:hover {
-            background: #cc0000;
+            background: #6b3410;
         }
         .rank-up-animation {
             position: fixed;
@@ -186,7 +215,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(42, 48, 42, 0.98);
             display: none;
             justify-content: center;
             align-items: center;
@@ -195,7 +224,7 @@
         }
         .rank-up-content {
             text-align: center;
-            color: white;
+            color: #d4af37;
             animation: scaleIn 0.5s;
         }
         .rank-up-content h2 {
@@ -203,14 +232,13 @@
             margin-bottom: 20px;
             text-transform: uppercase;
             letter-spacing: 3px;
-            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #d4af37;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
         }
         .rank-up-content p {
             font-size: 24px;
             margin-bottom: 30px;
+            color: #e4e4e4;
         }
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -342,14 +370,7 @@
             }
 
             if (rank.name === 'No Insignia') {
-                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('x', '40');
-                text.setAttribute('y', '45');
-                text.setAttribute('text-anchor', 'middle');
-                text.setAttribute('fill', 'white');
-                text.setAttribute('font-size', size > 50 ? '12' : '8');
-                text.textContent = 'NO INSIGNIA';
-                svg.appendChild(text);
+                // Just return empty SVG for No Insignia
                 return svg;
             }
 
@@ -569,6 +590,9 @@
             
             const rankName = document.createElement('div');
             rankName.textContent = ranks[currentRank].name;
+            rankName.style.fontSize = '28px';
+            rankName.style.fontWeight = 'bold';
+            rankName.style.textShadow = '2px 2px 4px rgba(0,0,0,0.8)';
             rankDisplay.appendChild(rankName);
             
             const progress = document.createElement('div');
