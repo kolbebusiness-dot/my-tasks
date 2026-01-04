@@ -47,6 +47,7 @@
         .rank-insignia { width: 80px; height: 80px; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.8)); }
         .input-section { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .input-row { display: flex; gap: 10px; }
+        .input-row button { flex-shrink: 0; }
         input[type="text"] {
             flex: 1;
             padding: 12px;
@@ -107,6 +108,7 @@
             border-radius: 6px;
             margin-bottom: 8px;
             border: 1px solid #5a6b5c;
+            position: relative;
         }
         .task-item.completed { opacity: 0.5; text-decoration: line-through; }
         .task-checkbox {
@@ -125,6 +127,7 @@
             border-radius: 4px;
             min-width: 0;
             word-break: break-word;
+            margin-right: 10px;
         }
         .task-text:hover { background: rgba(255, 255, 255, 0.1); }
         .task-text.editing {
@@ -132,23 +135,51 @@
             color: #2a302a;
             outline: 2px solid #d4af37;
         }
-        .task-controls { display: flex; gap: 5px; margin-left: 10px; flex-shrink: 0; }
-        .arrow-btn, .move-btn, .delete-btn {
+        .task-menu-btn {
+            background: #5a6b5c;
             color: white;
             border: none;
-            padding: 6px 10px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .task-menu-btn:hover { background: #4a5a4b; }
+        .task-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 5px;
+            background: #2a302a;
+            border: 2px solid #5a6b5c;
+            border-radius: 6px;
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            min-width: 120px;
+        }
+        .task-menu.show { display: flex; }
+        .task-menu button {
+            background: #5a6b5c;
+            color: white;
+            border: none;
+            padding: 8px 12px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
             font-weight: bold;
+            text-align: left;
+            white-space: nowrap;
         }
-        .arrow-btn { background: #5a6b5c; }
-        .arrow-btn:hover { background: #4a5a4b; }
-        .arrow-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .move-btn { background: #5a6b5c; font-size: 16px; }
-        .move-btn:hover { background: #4a5a4b; }
-        .delete-btn { background: #8b4513; font-size: 16px; }
-        .delete-btn:hover { background: #6b3410; }
+        .task-menu button:hover { background: #4a5a4b; }
+        .task-menu button.delete { background: #8b4513; }
+        .task-menu button.delete:hover { background: #6b3410; }
         .modal {
             position: fixed;
             top: 0;
@@ -371,11 +402,31 @@
         }
 
         function openMoveModal(bi, ti) {
+            closeAllMenus();
             movingTask = { bracketIndex: bi, taskIndex: ti };
             const s = document.getElementById('moveBracketSelect'); s.innerHTML = '';
             brackets.forEach((b, i) => { const o = document.createElement('option'); o.value = i; o.textContent = ranks[b.rank].name + (i === bi ? ' (current)' : ''); s.appendChild(o); });
             s.value = bi; document.getElementById('moveModal').style.display = 'flex';
         }
+
+        function toggleTaskMenu(e, bi, ti) {
+            e.stopPropagation();
+            const menuId = `menu-${bi}-${ti}`;
+            const menu = document.getElementById(menuId);
+            const allMenus = document.querySelectorAll('.task-menu');
+            allMenus.forEach(m => { if (m.id !== menuId) m.classList.remove('show'); });
+            menu.classList.toggle('show');
+        }
+
+        function closeAllMenus() {
+            document.querySelectorAll('.task-menu').forEach(m => m.classList.remove('show'));
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.task-menu-btn') && !e.target.closest('.task-menu')) {
+                closeAllMenus();
+            }
+        });
         function cancelMove() { movingTask = null; document.getElementById('moveModal').style.display = 'none'; }
         function saveMove() {
             if (movingTask) {
@@ -443,11 +494,12 @@
                             <li class="task-item ${t.completed ? 'completed' : ''}">
                                 <input type="checkbox" class="task-checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTask(${bi}, ${ti})">
                                 <span class="task-text" onclick="editTaskText(event, ${bi}, ${ti})">${t.text}</span>
-                                <div class="task-controls">
-                                    <button class="arrow-btn" onclick="moveTaskUp(${bi}, ${ti})" ${ti === 0 ? 'disabled' : ''}>▲</button>
-                                    <button class="arrow-btn" onclick="moveTaskDown(${bi}, ${ti})" ${ti === b.tasks.length - 1 ? 'disabled' : ''}>▼</button>
-                                    <button class="move-btn" onclick="openMoveModal(${bi}, ${ti})">⇅</button>
-                                    <button class="delete-btn" onclick="deleteTask(${bi}, ${ti})">×</button>
+                                <button class="task-menu-btn" onclick="toggleTaskMenu(event, ${bi}, ${ti})">⋮</button>
+                                <div class="task-menu" id="menu-${bi}-${ti}">
+                                    <button onclick="moveTaskUp(${bi}, ${ti}); closeAllMenus();" ${ti === 0 ? 'disabled' : ''}>▲ Move Up</button>
+                                    <button onclick="moveTaskDown(${bi}, ${ti}); closeAllMenus();" ${ti === b.tasks.length - 1 ? 'disabled' : ''}>▼ Move Down</button>
+                                    <button onclick="openMoveModal(${bi}, ${ti})">⇅ Move To...</button>
+                                    <button class="delete" onclick="deleteTask(${bi}, ${ti})">× Delete</button>
                                 </div>
                             </li>
                         `).join('')}
