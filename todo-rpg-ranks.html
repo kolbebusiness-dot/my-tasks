@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Task Ranks">
+    <title>Task Rank System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+        .rank-display {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            margin-bottom: 30px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .rank-progress {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .rank-insignia {
+            width: 80px;
+            height: 80px;
+        }
+        .input-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+            min-width: 200px;
+        }
+        .bracket-select-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .small-insignia {
+            width: 30px;
+            height: 30px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        button {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .bracket-section {
+            margin-bottom: 25px;
+        }
+        .bracket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+            gap: 10px;
+        }
+        .bracket-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .bracket-insignia {
+            width: 40px;
+            height: 40px;
+        }
+        .bracket-progress {
+            font-size: 14px;
+            color: #666;
+        }
+        .task-list {
+            list-style: none;
+        }
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .task-item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .task-text {
+            flex: 1;
+        }
+        .delete-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+        .delete-btn:hover {
+            background: #cc0000;
+        }
+        .rank-up-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+        .rank-up-content {
+            text-align: center;
+            color: white;
+            animation: scaleIn 0.5s;
+        }
+        .rank-up-content h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .rank-up-content p {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0.5); }
+            to { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Task Rank System</h1>
+        
+        <div class="rank-display" id="rankDisplay">
+            Recruit
+            <div class="rank-progress" id="rankProgress">0/3 brackets completed</div>
+        </div>
+
+        <div class="input-section">
+            <input type="text" id="taskInput" placeholder="Enter task...">
+            <select id="bracketSelect">
+                <option value="0">Bracket 1 → Private</option>
+                <option value="1">Bracket 2 → Private First Class</option>
+                <option value="2">Bracket 3 → Specialist</option>
+                <option value="3">Bracket 4 → Corporal</option>
+                <option value="4">Bracket 5 → Sergeant</option>
+                <option value="5">Bracket 6 → Staff Sergeant</option>
+                <option value="6">Bracket 7 → Sergeant First Class</option>
+                <option value="7">Bracket 8 → Master Sergeant</option>
+                <option value="8">Bracket 9 → First Sergeant</option>
+                <option value="9">Bracket 10 → Sergeant Major</option>
+                <option value="10">Bracket 11 → Command Sergeant Major</option>
+                <option value="11">Bracket 12 → Sergeant Major of the Army</option>
+            </select>
+            <button onclick="addTask()">Add</button>
+        </div>
+
+        <div id="bracketsContainer"></div>
+    </div>
+
+    <div class="rank-up-animation" id="rankUpAnimation">
+        <div class="rank-up-content">
+            <div id="newRankInsignia"></div>
+            <h2 id="newRankText">RANK UP!</h2>
+            <p id="newRankName"></p>
+            <button onclick="closeRankUp()">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        const ranks = [
+            { name: 'No Insignia', stripes: 0 },
+            { name: 'Private', stripes: 1 },
+            { name: 'Private First Class', stripes: 1, arc: true },
+            { name: 'Specialist', stripes: 0, eagle: true },
+            { name: 'Corporal', stripes: 2 },
+            { name: 'Sergeant', stripes: 3 },
+            { name: 'Staff Sergeant', stripes: 3, rockers: 1 },
+            { name: 'Sergeant First Class', stripes: 3, rockers: 2 },
+            { name: 'Master Sergeant', stripes: 3, rockers: 3 },
+            { name: 'First Sergeant', stripes: 3, rockers: 3, diamond: true },
+            { name: 'Sergeant Major', stripes: 3, rockers: 3, star: true },
+            { name: 'Command Sergeant Major', stripes: 3, rockers: 3, star: true, wreath: true },
+            { name: 'Sergeant Major of the Army', stripes: 3, rockers: 3, star: true, wreath: true, seal: true }
+        ];
+        let brackets = [
+            { name: 'Bracket 1', rank: 1, tasks: [], completed: false },
+            { name: 'Bracket 2', rank: 2, tasks: [], completed: false },
+            { name: 'Bracket 3', rank: 3, tasks: [], completed: false },
+            { name: 'Bracket 4', rank: 4, tasks: [], completed: false },
+            { name: 'Bracket 5', rank: 5, tasks: [], completed: false },
+            { name: 'Bracket 6', rank: 6, tasks: [], completed: false },
+            { name: 'Bracket 7', rank: 7, tasks: [], completed: false },
+            { name: 'Bracket 8', rank: 8, tasks: [], completed: false },
+            { name: 'Bracket 9', rank: 9, tasks: [], completed: false },
+            { name: 'Bracket 10', rank: 10, tasks: [], completed: false },
+            { name: 'Bracket 11', rank: 11, tasks: [], completed: false },
+            { name: 'Bracket 12', rank: 12, tasks: [], completed: false }
+        ];
+        let currentRank = 0;
+
+        function saveData() {
+            const data = {
+                brackets: brackets,
+                currentRank: currentRank
+            };
+            localStorage.setItem('taskRanksData', JSON.stringify(data));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('taskRanksData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                brackets = data.brackets;
+                currentRank = data.currentRank;
+            }
+        }
+
+        function drawRankInsignia(rank, size = 80) {
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', size.toString());
+            svg.setAttribute('height', size.toString());
+            svg.setAttribute('viewBox', '0 0 80 80');
+            
+            if (size === 80) {
+                svg.classList.add('rank-insignia');
+            } else if (size === 40) {
+                svg.classList.add('bracket-insignia');
+            } else if (size === 30) {
+                svg.classList.add('small-insignia');
+            }
+
+            if (rank.name === 'No Insignia') {
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', '40');
+                text.setAttribute('y', '45');
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('fill', 'white');
+                text.setAttribute('font-size', size > 50 ? '12' : '8');
+                text.textContent = 'NO INSIGNIA';
+                svg.appendChild(text);
+                return svg;
+            }
+
+            if (rank.eagle) {
+                // Draw eagle shield
+                const shield = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                shield.setAttribute('d', 'M 40,20 L 30,25 L 25,40 L 30,55 L 40,60 L 50,55 L 55,40 L 50,25 Z');
+                shield.setAttribute('fill', '#1e3c72');
+                shield.setAttribute('stroke', '#f4b942');
+                shield.setAttribute('stroke-width', '2');
+                svg.appendChild(shield);
+
+                // Draw simplified eagle
+                const eagle = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                eagle.setAttribute('d', 'M 32,35 L 40,30 L 48,35 M 35,38 L 40,42 L 45,38 M 30,40 L 35,42 M 50,40 L 45,42');
+                eagle.setAttribute('stroke', '#f4b942');
+                eagle.setAttribute('stroke-width', '2');
+                eagle.setAttribute('fill', 'none');
+                svg.appendChild(eagle);
+                
+                return svg;
+            }
+
+            const baseY = 65;
+            const stripeHeight = 8;
+            const stripeSpacing = 3;
+
+            if (rank.stripes > 0) {
+                for (let i = 0; i < rank.stripes; i++) {
+                    const y = baseY - (i * (stripeHeight + stripeSpacing));
+                    const stripe = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                    const points = `20,${y} 40,${y-12} 60,${y} 60,${y+stripeHeight} 40,${y-12+stripeHeight} 20,${y+stripeHeight}`;
+                    stripe.setAttribute('points', points);
+                    stripe.setAttribute('fill', '#f4b942');
+                    stripe.setAttribute('stroke', '#1e3c72');
+                    stripe.setAttribute('stroke-width', '1.5');
+                    svg.appendChild(stripe);
+                }
+            }
+
+            if (rank.arc) {
+                const arc = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                arc.setAttribute('d', 'M 23,68 Q 40,58 57,68');
+                arc.setAttribute('fill', 'none');
+                arc.setAttribute('stroke', '#f4b942');
+                arc.setAttribute('stroke-width', '4');
+                svg.appendChild(arc);
+            }
+
+            if (rank.rockers) {
+                const baseRockerY = 70;
+                for (let i = 0; i < rank.rockers; i++) {
+                    const y = baseRockerY + (i * 5);
+                    const rocker = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    rocker.setAttribute('d', `M 20,${y} Q 40,${y+4} 60,${y}`);
+                    rocker.setAttribute('fill', 'none');
+                    rocker.setAttribute('stroke', '#f4b942');
+                    rocker.setAttribute('stroke-width', '3.5');
+                    svg.appendChild(rocker);
+                }
+            }
+
+            if (rank.diamond) {
+                const diamond = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                diamond.setAttribute('points', '40,15 46,25 40,35 34,25');
+                diamond.setAttribute('fill', '#f4b942');
+                diamond.setAttribute('stroke', '#1e3c72');
+                diamond.setAttribute('stroke-width', '1.5');
+                svg.appendChild(diamond);
+            }
+
+            if (rank.star) {
+                const star = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                const starPoints = [];
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+                    const x = 40 + 8 * Math.cos(angle);
+                    const y = 25 + 8 * Math.sin(angle);
+                    starPoints.push(`${x},${y}`);
+                }
+                star.setAttribute('points', starPoints.join(' '));
+                star.setAttribute('fill', '#f4b942');
+                star.setAttribute('stroke', '#1e3c72');
+                star.setAttribute('stroke-width', '1');
+                svg.appendChild(star);
+            }
+
+            if (rank.seal) {
+                // Extra outer wreath for Sergeant Major of the Army
+                const outerWreath = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                outerWreath.setAttribute('cx', '40');
+                outerWreath.setAttribute('cy', '25');
+                outerWreath.setAttribute('r', '15');
+                outerWreath.setAttribute('fill', 'none');
+                outerWreath.setAttribute('stroke', '#6b8e23');
+                outerWreath.setAttribute('stroke-width', '2.5');
+                outerWreath.setAttribute('stroke-dasharray', '3,2');
+                svg.appendChild(outerWreath);
+                
+                // Army star in center
+                const centerStar = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                const centerPoints = [];
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+                    const x = 40 + 5 * Math.cos(angle);
+                    const y = 25 + 5 * Math.sin(angle);
+                    centerPoints.push(`${x},${y}`);
+                }
+                centerStar.setAttribute('points', centerPoints.join(' '));
+                centerStar.setAttribute('fill', '#f4b942');
+                centerStar.setAttribute('stroke', '#1e3c72');
+                centerStar.setAttribute('stroke-width', '0.5');
+                svg.appendChild(centerStar);
+            }
+
+            if (rank.wreath) {
+                const wreath = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                wreath.setAttribute('cx', '40');
+                wreath.setAttribute('cy', '25');
+                wreath.setAttribute('r', '12');
+                wreath.setAttribute('fill', 'none');
+                wreath.setAttribute('stroke', '#6b8e23');
+                wreath.setAttribute('stroke-width', '2');
+                wreath.setAttribute('stroke-dasharray', '2,2');
+                svg.appendChild(wreath);
+            }
+
+            return svg;
+        }
+
+        function populateSelect() {
+            const select = document.getElementById('bracketSelect');
+            select.innerHTML = '';
+            
+            brackets.forEach((bracket, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                
+                const tempDiv = document.createElement('div');
+                tempDiv.appendChild(drawRankInsignia(ranks[bracket.rank], 30));
+                
+                option.textContent = ranks[bracket.rank].name;
+                select.appendChild(option);
+            });
+        }
+
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const select = document.getElementById('bracketSelect');
+            const text = input.value.trim();
+            const bracketIndex = parseInt(select.value);
+
+            if (!text) return;
+
+            brackets[bracketIndex].tasks.push({ text, completed: false });
+            input.value = '';
+            saveData();
+            render();
+        }
+
+        function deleteTask(bracketIndex, taskIndex) {
+            brackets[bracketIndex].tasks.splice(taskIndex, 1);
+            checkBracketCompletion(bracketIndex);
+            saveData();
+            render();
+        }
+
+        function toggleTask(bracketIndex, taskIndex) {
+            brackets[bracketIndex].tasks[taskIndex].completed = !brackets[bracketIndex].tasks[taskIndex].completed;
+            checkBracketCompletion(bracketIndex);
+            saveData();
+            render();
+        }
+
+        function checkBracketCompletion(bracketIndex) {
+            const bracket = brackets[bracketIndex];
+            const allCompleted = bracket.tasks.length > 0 && bracket.tasks.every(t => t.completed);
+            
+            if (allCompleted && !bracket.completed) {
+                bracket.completed = true;
+                checkRankUp();
+            }
+        }
+
+        function checkRankUp() {
+            const completedBrackets = brackets.filter(b => b.completed).length;
+            
+            if (completedBrackets > currentRank) {
+                currentRank = completedBrackets;
+                showRankUp(currentRank);
+            }
+        }
+
+        function showRankUp(rankIndex) {
+            const animation = document.getElementById('rankUpAnimation');
+            const rankText = document.getElementById('newRankName');
+            const insigniaContainer = document.getElementById('newRankInsignia');
+            
+            rankText.textContent = ranks[rankIndex].name;
+            insigniaContainer.innerHTML = '';
+            insigniaContainer.appendChild(drawRankInsignia(ranks[rankIndex]));
+            
+            animation.style.display = 'flex';
+        }
+
+        function closeRankUp() {
+            document.getElementById('rankUpAnimation').style.display = 'none';
+        }
+
+        function render() {
+            const container = document.getElementById('bracketsContainer');
+            const completedBrackets = brackets.filter(b => b.completed).length;
+            
+            const rankDisplay = document.getElementById('rankDisplay');
+            rankDisplay.innerHTML = '';
+            rankDisplay.appendChild(drawRankInsignia(ranks[currentRank]));
+            
+            const rankName = document.createElement('div');
+            rankName.textContent = ranks[currentRank].name;
+            rankDisplay.appendChild(rankName);
+            
+            const progress = document.createElement('div');
+            progress.className = 'rank-progress';
+            progress.textContent = `${completedBrackets}/${brackets.length} brackets completed`;
+            rankDisplay.appendChild(progress);
+
+            container.innerHTML = brackets.map((bracket, bIndex) => {
+                const insigniaDiv = document.createElement('div');
+                insigniaDiv.appendChild(drawRankInsignia(ranks[bracket.rank], 40));
+                
+                return `
+                <div class="bracket-section">
+                    <div class="bracket-header">
+                        <div class="bracket-title">
+                            <div id="bracket-insignia-${bIndex}"></div>
+                            <span>${ranks[bracket.rank].name}</span>
+                        </div>
+                        <span class="bracket-progress">
+                            ${bracket.tasks.filter(t => t.completed).length}/${bracket.tasks.length} tasks
+                            ${bracket.completed ? '✓' : ''}
+                        </span>
+                    </div>
+                    <ul class="task-list">
+                        ${bracket.tasks.map((task, tIndex) => `
+                            <li class="task-item ${task.completed ? 'completed' : ''}">
+                                <input type="checkbox" class="task-checkbox" 
+                                    ${task.completed ? 'checked' : ''} 
+                                    onchange="toggleTask(${bIndex}, ${tIndex})">
+                                <span class="task-text">${task.text}</span>
+                                <button class="delete-btn" onclick="deleteTask(${bIndex}, ${tIndex})">Delete</button>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                `;
+            }).join('');
+            
+            brackets.forEach((bracket, bIndex) => {
+                const insigniaContainer = document.getElementById(`bracket-insignia-${bIndex}`);
+                if (insigniaContainer) {
+                    insigniaContainer.appendChild(drawRankInsignia(ranks[bracket.rank], 40));
+                }
+            });
+        }
+
+        loadData();
+        populateSelect();
+        render();
+    </script>
+</body>
+</html>
