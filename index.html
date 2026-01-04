@@ -3,30 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Task Ranks">
     <title>Task Rank System</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: 
-                repeating-linear-gradient(
-                    45deg,
-                    #3d4a3e,
-                    #3d4a3e 10px,
-                    #4a5a4b 10px,
-                    #4a5a4b 20px,
-                    #5a6b5c 20px,
-                    #5a6b5c 30px,
-                    #4a5548 30px,
-                    #4a5548 40px
-                );
+            background: repeating-linear-gradient(45deg, #3d4a3e, #3d4a3e 10px, #4a5a4b 10px, #4a5a4b 20px, #5a6b5c 20px, #5a6b5c 30px, #4a5548 30px, #4a5548 40px);
             min-height: 100vh;
             padding: 20px;
         }
@@ -54,10 +36,6 @@
             border-radius: 8px;
             margin-bottom: 30px;
             color: #d4af37;
-            font-size: 24px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             border: 2px solid #7a8b7c;
             display: flex;
@@ -65,40 +43,19 @@
             align-items: center;
             gap: 15px;
         }
-        .rank-progress {
-            font-size: 14px;
-            opacity: 0.9;
-            color: #c4c4c4;
-        }
-        .rank-insignia {
-            width: 80px;
-            height: 80px;
-            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.8));
-        }
-        .input-section {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .input-row {
-            display: flex;
-            gap: 10px;
-        }
+        .rank-progress { font-size: 14px; opacity: 0.9; color: #c4c4c4; }
+        .rank-insignia { width: 80px; height: 80px; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.8)); }
+        .input-section { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .input-row { display: flex; gap: 10px; }
         input[type="text"] {
             flex: 1;
             padding: 12px;
             border: 2px solid #5a6b5c;
             border-radius: 6px;
             font-size: 16px;
-            transition: border-color 0.3s;
-            min-width: 0;
             background: rgba(240, 240, 240, 0.95);
         }
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #d4af37;
-        }
+        input[type="text"]:focus { outline: none; border-color: #d4af37; }
         select {
             padding: 12px;
             border: 2px solid #5a6b5c;
@@ -116,34 +73,15 @@
             border-radius: 6px;
             font-size: 16px;
             cursor: pointer;
-            transition: background 0.3s;
-            white-space: nowrap;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
-        button:hover {
-            background: #4a5a4b;
-        }
-        .reset-btn {
-            background: #8b4513;
-            margin-top: 10px;
-            width: 100%;
-        }
-        .reset-btn:hover {
-            background: #6b3410;
-        }
-        .reset-progress-btn {
-            background: #cd853f;
-            margin-top: 10px;
-            width: 100%;
-        }
-        .reset-progress-btn:hover {
-            background: #b8732e;
-        }
-        .bracket-section {
-            margin-bottom: 25px;
-        }
+        button:hover { background: #4a5a4b; }
+        .reset-btn { background: #8b4513; margin-top: 10px; width: 100%; }
+        .reset-btn:hover { background: #6b3410; }
+        .reset-progress-btn { background: #cd853f; margin-top: 10px; width: 100%; }
+        .reset-progress-btn:hover { background: #b8732e; }
+        .bracket-section { margin-bottom: 25px; }
         .bracket-header {
             display: flex;
             justify-content: space-between;
@@ -157,23 +95,10 @@
             gap: 10px;
             border: 2px solid #3d4a3e;
         }
-        .bracket-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .bracket-insignia {
-            width: 40px;
-            height: 40px;
-            filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.8));
-        }
-        .bracket-progress {
-            font-size: 14px;
-            color: #c4c4c4;
-        }
-        .task-list {
-            list-style: none;
-        }
+        .bracket-title { display: flex; align-items: center; gap: 10px; }
+        .bracket-insignia { width: 40px; height: 40px; filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.8)); }
+        .bracket-progress { font-size: 14px; color: #c4c4c4; }
+        .task-list { list-style: none; }
         .task-item {
             display: flex;
             align-items: center;
@@ -181,14 +106,9 @@
             background: rgba(90, 107, 92, 0.3);
             border-radius: 6px;
             margin-bottom: 8px;
-            transition: all 0.3s;
-            position: relative;
             border: 1px solid #5a6b5c;
         }
-        .task-item.completed {
-            opacity: 0.5;
-            text-decoration: line-through;
-        }
+        .task-item.completed { opacity: 0.5; text-decoration: line-through; }
         .task-checkbox {
             width: 20px;
             height: 20px;
@@ -200,46 +120,20 @@
         .task-text {
             flex: 1;
             color: #e4e4e4;
-        }
-        .delete-btn {
-            background: #8b4513;
-            color: white;
-            border: none;
-            padding: 6px 12px;
+            cursor: text;
+            padding: 4px;
             border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-left: 10px;
-            flex-shrink: 0;
-            text-transform: uppercase;
-            font-weight: bold;
+            min-width: 0;
+            word-break: break-word;
         }
-        .delete-btn:hover {
-            background: #6b3410;
+        .task-text:hover { background: rgba(255, 255, 255, 0.1); }
+        .task-text.editing {
+            background: rgba(240, 240, 240, 0.95);
+            color: #2a302a;
+            outline: 2px solid #d4af37;
         }
-        .edit-btn, .move-btn {
-            background: #5a6b5c;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-left: 5px;
-            flex-shrink: 0;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-        .edit-btn:hover, .move-btn:hover {
-            background: #4a5a4b;
-        }
-        .task-controls {
-            display: flex;
-            gap: 5px;
-            flex-shrink: 0;
-        }
-        .arrow-btn {
-            background: #5a6b5c;
+        .task-controls { display: flex; gap: 5px; margin-left: 10px; flex-shrink: 0; }
+        .arrow-btn, .move-btn, .delete-btn {
             color: white;
             border: none;
             padding: 6px 10px;
@@ -248,13 +142,13 @@
             font-size: 14px;
             font-weight: bold;
         }
-        .arrow-btn:hover {
-            background: #4a5a4b;
-        }
-        .arrow-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
+        .arrow-btn { background: #5a6b5c; }
+        .arrow-btn:hover { background: #4a5a4b; }
+        .arrow-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .move-btn { background: #5a6b5c; font-size: 16px; }
+        .move-btn:hover { background: #4a5a4b; }
+        .delete-btn { background: #8b4513; font-size: 16px; }
+        .delete-btn:hover { background: #6b3410; }
         .modal {
             position: fixed;
             top: 0;
@@ -275,12 +169,7 @@
             width: 90%;
             border: 3px solid #5a6b5c;
         }
-        .modal-content h3 {
-            color: #d4af37;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .modal-content input,
+        .modal-content h3 { color: #d4af37; margin-bottom: 20px; text-align: center; }
         .modal-content select {
             width: 100%;
             padding: 12px;
@@ -290,14 +179,8 @@
             font-size: 16px;
             background: rgba(240, 240, 240, 0.95);
         }
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-        .modal-buttons button {
-            padding: 10px 20px;
-        }
+        .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+        .modal-buttons button { padding: 10px 20px; }
         .rank-up-animation {
             position: fixed;
             top: 0;
@@ -309,42 +192,22 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            animation: fadeIn 0.3s;
         }
-        .rank-up-content {
-            text-align: center;
-            color: #d4af37;
-            animation: scaleIn 0.5s;
-        }
+        .rank-up-content { text-align: center; color: #d4af37; }
         .rank-up-content h2 {
             font-size: 48px;
             margin-bottom: 20px;
             text-transform: uppercase;
-            letter-spacing: 3px;
             color: #d4af37;
             text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
         }
-        .rank-up-content p {
-            font-size: 24px;
-            margin-bottom: 30px;
-            color: #e4e4e4;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes scaleIn {
-            from { transform: scale(0.5); }
-            to { transform: scale(1); }
-        }
+        .rank-up-content p { font-size: 24px; margin-bottom: 30px; color: #e4e4e4; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Task Rank System</h1>
-        
         <div class="rank-display" id="rankDisplay"></div>
-
         <div class="input-section">
             <div class="input-row">
                 <input type="text" id="taskInput" placeholder="Enter task...">
@@ -354,19 +217,26 @@
             <button class="reset-progress-btn" onclick="resetProgress()">Reset Progress</button>
             <button class="reset-btn" onclick="resetAll()">Reset All Data</button>
         </div>
-
         <div id="bracketsContainer"></div>
     </div>
-
     <div class="rank-up-animation" id="rankUpAnimation">
         <div class="rank-up-content">
             <div id="newRankInsignia"></div>
-            <h2 id="newRankText">RANK UP!</h2>
+            <h2>RANK UP!</h2>
             <p id="newRankName"></p>
             <button onclick="closeRankUp()">Continue</button>
         </div>
     </div>
-
+    <div class="modal" id="moveModal">
+        <div class="modal-content">
+            <h3>Move Task To</h3>
+            <select id="moveBracketSelect"></select>
+            <div class="modal-buttons">
+                <button onclick="cancelMove()">Cancel</button>
+                <button onclick="saveMove()">Move</button>
+            </div>
+        </div>
+    </div>
     <script>
         const ranks = [
             { name: 'No Insignia', stripes: 0 },
@@ -383,609 +253,215 @@
             { name: 'Command Sergeant Major', stripes: 3, rockers: 3, star: true, wreath: true },
             { name: 'Sergeant Major of the Army', stripes: 3, rockers: 3, star: true, wreath: true, seal: true }
         ];
-        let brackets = [
-            { name: 'Bracket 1', rank: 1, tasks: [], completed: false },
-            { name: 'Bracket 2', rank: 2, tasks: [], completed: false },
-            { name: 'Bracket 3', rank: 3, tasks: [], completed: false },
-            { name: 'Bracket 4', rank: 4, tasks: [], completed: false },
-            { name: 'Bracket 5', rank: 5, tasks: [], completed: false },
-            { name: 'Bracket 6', rank: 6, tasks: [], completed: false },
-            { name: 'Bracket 7', rank: 7, tasks: [], completed: false },
-            { name: 'Bracket 8', rank: 8, tasks: [], completed: false },
-            { name: 'Bracket 9', rank: 9, tasks: [], completed: false },
-            { name: 'Bracket 10', rank: 10, tasks: [], completed: false },
-            { name: 'Bracket 11', rank: 11, tasks: [], completed: false },
-            { name: 'Bracket 12', rank: 12, tasks: [], completed: false }
-        ];
-        let currentRank = 0;
-        let draggedTask = null;
-        let draggedFrom = null;
-        let longPressTimer = null;
-        let isDragging = false;
+        let brackets = Array.from({length:12}, (_,i) => ({ name: `Bracket ${i+1}`, rank: i+1, tasks: [], completed: false }));
+        let currentRank = 0, movingTask = null;
 
-        function saveData() {
-            const data = {
-                brackets: brackets,
-                currentRank: currentRank
-            };
-            localStorage.setItem('taskRanksData', JSON.stringify(data));
-        }
-
+        function saveData() { localStorage.setItem('taskRanksData', JSON.stringify({ brackets, currentRank })); }
         function loadData() {
             const saved = localStorage.getItem('taskRanksData');
-            if (saved) {
-                const data = JSON.parse(saved);
-                brackets = data.brackets;
-                currentRank = data.currentRank;
-            }
+            if (saved) { const data = JSON.parse(saved); brackets = data.brackets; currentRank = data.currentRank; }
         }
 
         function resetProgress() {
-            if (confirm('Are you sure you want to reset all progress? This will uncheck all tasks and reset your rank to No Insignia, but keep all your tasks.')) {
-                // Uncheck all tasks and mark brackets as incomplete
-                brackets.forEach(bracket => {
-                    bracket.tasks.forEach(task => {
-                        task.completed = false;
-                    });
-                    bracket.completed = false;
-                });
-                
-                // Reset rank to No Insignia
-                currentRank = 0;
-                
-                saveData();
-                render();
-                alert('Progress has been reset! All tasks remain but are now unchecked.');
+            if (confirm('Reset all progress? This will uncheck all tasks and reset your rank, but keep all tasks.')) {
+                brackets.forEach(b => { b.tasks.forEach(t => t.completed = false); b.completed = false; });
+                currentRank = 0; saveData(); render();
             }
         }
 
         function resetAll() {
-            if (confirm('Are you sure you want to delete ALL tasks and reset your rank to No Insignia? This cannot be undone.')) {
+            if (confirm('Delete ALL tasks and reset rank? This cannot be undone.')) {
                 localStorage.removeItem('taskRanksData');
-                
-                // Reset to initial state
-                brackets = [
-                    { name: 'Bracket 1', rank: 1, tasks: [], completed: false },
-                    { name: 'Bracket 2', rank: 2, tasks: [], completed: false },
-                    { name: 'Bracket 3', rank: 3, tasks: [], completed: false },
-                    { name: 'Bracket 4', rank: 4, tasks: [], completed: false },
-                    { name: 'Bracket 5', rank: 5, tasks: [], completed: false },
-                    { name: 'Bracket 6', rank: 6, tasks: [], completed: false },
-                    { name: 'Bracket 7', rank: 7, tasks: [], completed: false },
-                    { name: 'Bracket 8', rank: 8, tasks: [], completed: false },
-                    { name: 'Bracket 9', rank: 9, tasks: [], completed: false },
-                    { name: 'Bracket 10', rank: 10, tasks: [], completed: false },
-                    { name: 'Bracket 11', rank: 11, tasks: [], completed: false },
-                    { name: 'Bracket 12', rank: 12, tasks: [], completed: false }
-                ];
-                currentRank = 0;
-                
-                render();
-                alert('All data has been reset!');
+                brackets = Array.from({length:12}, (_,i) => ({ name: `Bracket ${i+1}`, rank: i+1, tasks: [], completed: false }));
+                currentRank = 0; render();
             }
         }
 
         function drawRankInsignia(rank, size = 80) {
             const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.setAttribute('width', size.toString());
-            svg.setAttribute('height', size.toString());
-            svg.setAttribute('viewBox', '0 0 80 80');
-            
-            if (size === 80) {
-                svg.classList.add('rank-insignia');
-            } else if (size === 40) {
-                svg.classList.add('bracket-insignia');
-            } else if (size === 30) {
-                svg.classList.add('small-insignia');
-            }
-
-            if (rank.name === 'No Insignia') {
-                // Return empty SVG for No Insignia rank
-                return svg;
-            }
+            svg.setAttribute('width', size); svg.setAttribute('height', size); svg.setAttribute('viewBox', '0 0 80 80');
+            if (size === 80) svg.classList.add('rank-insignia');
+            else if (size === 40) svg.classList.add('bracket-insignia');
+            if (rank.name === 'No Insignia') return svg;
 
             if (rank.eagle) {
-                // Draw eagle shield
                 const shield = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 shield.setAttribute('d', 'M 40,20 L 30,25 L 25,40 L 30,55 L 40,60 L 50,55 L 55,40 L 50,25 Z');
-                shield.setAttribute('fill', '#1e3c72');
-                shield.setAttribute('stroke', '#f4b942');
-                shield.setAttribute('stroke-width', '2');
+                shield.setAttribute('fill', '#1e3c72'); shield.setAttribute('stroke', '#f4b942'); shield.setAttribute('stroke-width', '2');
                 svg.appendChild(shield);
-
-                // Draw simplified eagle
                 const eagle = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 eagle.setAttribute('d', 'M 32,35 L 40,30 L 48,35 M 35,38 L 40,42 L 45,38 M 30,40 L 35,42 M 50,40 L 45,42');
-                eagle.setAttribute('stroke', '#f4b942');
-                eagle.setAttribute('stroke-width', '2');
-                eagle.setAttribute('fill', 'none');
+                eagle.setAttribute('stroke', '#f4b942'); eagle.setAttribute('stroke-width', '2'); eagle.setAttribute('fill', 'none');
                 svg.appendChild(eagle);
-                
                 return svg;
             }
 
-            const baseY = 65;
-            const stripeHeight = 8;
-            const stripeSpacing = 3;
-
-            if (rank.stripes > 0) {
+            if (rank.stripes) {
                 for (let i = 0; i < rank.stripes; i++) {
-                    const y = baseY - (i * (stripeHeight + stripeSpacing));
+                    const y = 65 - i * 11;
                     const stripe = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-                    const points = `20,${y} 40,${y-12} 60,${y} 60,${y+stripeHeight} 40,${y-12+stripeHeight} 20,${y+stripeHeight}`;
-                    stripe.setAttribute('points', points);
-                    stripe.setAttribute('fill', '#f4b942');
-                    stripe.setAttribute('stroke', '#1e3c72');
-                    stripe.setAttribute('stroke-width', '1.5');
+                    stripe.setAttribute('points', `20,${y} 40,${y-12} 60,${y} 60,${y+8} 40,${y-4} 20,${y+8}`);
+                    stripe.setAttribute('fill', '#f4b942'); stripe.setAttribute('stroke', '#1e3c72'); stripe.setAttribute('stroke-width', '1.5');
                     svg.appendChild(stripe);
                 }
             }
-
             if (rank.arc) {
                 const arc = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                arc.setAttribute('d', 'M 23,68 Q 40,58 57,68');
-                arc.setAttribute('fill', 'none');
-                arc.setAttribute('stroke', '#f4b942');
-                arc.setAttribute('stroke-width', '4');
+                arc.setAttribute('d', 'M 23,68 Q 40,58 57,68'); arc.setAttribute('fill', 'none');
+                arc.setAttribute('stroke', '#f4b942'); arc.setAttribute('stroke-width', '4');
                 svg.appendChild(arc);
             }
-
             if (rank.rockers) {
-                const baseRockerY = 70;
                 for (let i = 0; i < rank.rockers; i++) {
-                    const y = baseRockerY + (i * 5);
                     const rocker = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    rocker.setAttribute('d', `M 20,${y} Q 40,${y+4} 60,${y}`);
-                    rocker.setAttribute('fill', 'none');
-                    rocker.setAttribute('stroke', '#f4b942');
-                    rocker.setAttribute('stroke-width', '3.5');
+                    rocker.setAttribute('d', `M 20,${70 + i*5} Q 40,${74 + i*5} 60,${70 + i*5}`);
+                    rocker.setAttribute('fill', 'none'); rocker.setAttribute('stroke', '#f4b942'); rocker.setAttribute('stroke-width', '3.5');
                     svg.appendChild(rocker);
                 }
             }
-
             if (rank.diamond) {
                 const diamond = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
                 diamond.setAttribute('points', '40,15 46,25 40,35 34,25');
-                diamond.setAttribute('fill', '#f4b942');
-                diamond.setAttribute('stroke', '#1e3c72');
-                diamond.setAttribute('stroke-width', '1.5');
+                diamond.setAttribute('fill', '#f4b942'); diamond.setAttribute('stroke', '#1e3c72'); diamond.setAttribute('stroke-width', '1.5');
                 svg.appendChild(diamond);
             }
-
             if (rank.star) {
                 const star = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-                const starPoints = [];
-                for (let i = 0; i < 5; i++) {
-                    const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
-                    const x = 40 + 8 * Math.cos(angle);
-                    const y = 25 + 8 * Math.sin(angle);
-                    starPoints.push(`${x},${y}`);
-                }
-                star.setAttribute('points', starPoints.join(' '));
-                star.setAttribute('fill', '#f4b942');
-                star.setAttribute('stroke', '#1e3c72');
-                star.setAttribute('stroke-width', '1');
+                const pts = []; for (let i = 0; i < 5; i++) { const a = i*4*Math.PI/5 - Math.PI/2; pts.push(`${40+8*Math.cos(a)},${25+8*Math.sin(a)}`); }
+                star.setAttribute('points', pts.join(' ')); star.setAttribute('fill', '#f4b942'); star.setAttribute('stroke', '#1e3c72'); star.setAttribute('stroke-width', '1');
                 svg.appendChild(star);
             }
-
             if (rank.seal) {
-                // Extra outer wreath for Sergeant Major of the Army
-                const outerWreath = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                outerWreath.setAttribute('cx', '40');
-                outerWreath.setAttribute('cy', '25');
-                outerWreath.setAttribute('r', '15');
-                outerWreath.setAttribute('fill', 'none');
-                outerWreath.setAttribute('stroke', '#6b8e23');
-                outerWreath.setAttribute('stroke-width', '2.5');
-                outerWreath.setAttribute('stroke-dasharray', '3,2');
-                svg.appendChild(outerWreath);
-                
-                // Army star in center
-                const centerStar = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-                const centerPoints = [];
-                for (let i = 0; i < 5; i++) {
-                    const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
-                    const x = 40 + 5 * Math.cos(angle);
-                    const y = 25 + 5 * Math.sin(angle);
-                    centerPoints.push(`${x},${y}`);
-                }
-                centerStar.setAttribute('points', centerPoints.join(' '));
-                centerStar.setAttribute('fill', '#f4b942');
-                centerStar.setAttribute('stroke', '#1e3c72');
-                centerStar.setAttribute('stroke-width', '0.5');
-                svg.appendChild(centerStar);
+                const w = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                w.setAttribute('cx', '40'); w.setAttribute('cy', '25'); w.setAttribute('r', '15');
+                w.setAttribute('fill', 'none'); w.setAttribute('stroke', '#6b8e23'); w.setAttribute('stroke-width', '2.5'); w.setAttribute('stroke-dasharray', '3,2');
+                svg.appendChild(w);
+                const s = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                const p = []; for (let i = 0; i < 5; i++) { const a = i*4*Math.PI/5 - Math.PI/2; p.push(`${40+5*Math.cos(a)},${25+5*Math.sin(a)}`); }
+                s.setAttribute('points', p.join(' ')); s.setAttribute('fill', '#f4b942'); s.setAttribute('stroke', '#1e3c72'); s.setAttribute('stroke-width', '0.5');
+                svg.appendChild(s);
             }
-
             if (rank.wreath) {
-                const wreath = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                wreath.setAttribute('cx', '40');
-                wreath.setAttribute('cy', '25');
-                wreath.setAttribute('r', '12');
-                wreath.setAttribute('fill', 'none');
-                wreath.setAttribute('stroke', '#6b8e23');
-                wreath.setAttribute('stroke-width', '2');
-                wreath.setAttribute('stroke-dasharray', '2,2');
-                svg.appendChild(wreath);
+                const w = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                w.setAttribute('cx', '40'); w.setAttribute('cy', '25'); w.setAttribute('r', '12');
+                w.setAttribute('fill', 'none'); w.setAttribute('stroke', '#6b8e23'); w.setAttribute('stroke-width', '2'); w.setAttribute('stroke-dasharray', '2,2');
+                svg.appendChild(w);
             }
-
             return svg;
         }
 
         function populateSelect() {
-            const select = document.getElementById('bracketSelect');
-            select.innerHTML = '';
-            
-            brackets.forEach((bracket, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                
-                const tempDiv = document.createElement('div');
-                tempDiv.appendChild(drawRankInsignia(ranks[bracket.rank], 30));
-                
-                option.textContent = ranks[bracket.rank].name;
-                select.appendChild(option);
-            });
+            const s = document.getElementById('bracketSelect');
+            s.innerHTML = ''; brackets.forEach((b, i) => { const o = document.createElement('option'); o.value = i; o.textContent = ranks[b.rank].name; s.appendChild(o); });
         }
 
         function addTask() {
-            const input = document.getElementById('taskInput');
-            const select = document.getElementById('bracketSelect');
-            const text = input.value.trim();
-            const bracketIndex = parseInt(select.value);
-
-            if (!text) return;
-
-            brackets[bracketIndex].tasks.push({ text, completed: false });
-            input.value = '';
-            saveData();
-            render();
+            const i = document.getElementById('taskInput'), s = document.getElementById('bracketSelect'), t = i.value.trim(), bi = parseInt(s.value);
+            if (!t) return; brackets[bi].tasks.push({ text: t, completed: false }); i.value = ''; saveData(); render();
         }
 
-        function deleteTask(bracketIndex, taskIndex) {
-            if (confirm('Delete this task?')) {
-                brackets[bracketIndex].tasks.splice(taskIndex, 1);
-                checkBracketCompletion(bracketIndex);
-                saveData();
-                render();
-            }
+        function deleteTask(bi, ti) { if (confirm('Delete this task?')) { brackets[bi].tasks.splice(ti, 1); checkBracketCompletion(bi); saveData(); render(); } }
+        function moveTaskUp(bi, ti) {
+            if (ti > 0) { [brackets[bi].tasks[ti], brackets[bi].tasks[ti-1]] = [brackets[bi].tasks[ti-1], brackets[bi].tasks[ti]]; }
+            saveData(); render();
+        }
+        function moveTaskDown(bi, ti) {
+            if (ti < brackets[bi].tasks.length - 1) { [brackets[bi].tasks[ti], brackets[bi].tasks[ti+1]] = [brackets[bi].tasks[ti+1], brackets[bi].tasks[ti]]; }
+            saveData(); render();
         }
 
-        function startDrag(e, bracketIndex, taskIndex) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            longPressTimer = setTimeout(() => {
-                isDragging = true;
-                draggedTask = { bracketIndex, taskIndex };
-                draggedFrom = { bracketIndex, taskIndex };
-                
-                const taskItem = document.querySelector(`[data-bracket="${bracketIndex}"][data-task="${taskIndex}"]`);
-                if (taskItem) {
-                    taskItem.classList.add('dragging');
+        function openMoveModal(bi, ti) {
+            movingTask = { bracketIndex: bi, taskIndex: ti };
+            const s = document.getElementById('moveBracketSelect'); s.innerHTML = '';
+            brackets.forEach((b, i) => { const o = document.createElement('option'); o.value = i; o.textContent = ranks[b.rank].name + (i === bi ? ' (current)' : ''); s.appendChild(o); });
+            s.value = bi; document.getElementById('moveModal').style.display = 'flex';
+        }
+        function cancelMove() { movingTask = null; document.getElementById('moveModal').style.display = 'none'; }
+        function saveMove() {
+            if (movingTask) {
+                const tb = parseInt(document.getElementById('moveBracketSelect').value);
+                if (tb !== movingTask.bracketIndex) {
+                    const t = brackets[movingTask.bracketIndex].tasks[movingTask.taskIndex];
+                    brackets[movingTask.bracketIndex].tasks.splice(movingTask.taskIndex, 1);
+                    brackets[tb].tasks.push(t);
+                    checkBracketCompletion(movingTask.bracketIndex); checkBracketCompletion(tb);
+                    saveData(); render();
                 }
-                
-                // Haptic feedback if available
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
-                }
-            }, 300); // Reduced to 300ms for faster response
-        }
-
-        function endDrag(e) {
-            clearTimeout(longPressTimer);
-            
-            if (isDragging && draggedTask) {
-                const taskItem = e.target.closest('.task-item');
-                if (taskItem) {
-                    taskItem.classList.remove('dragging');
-                }
-                
-                document.querySelectorAll('.drag-over').forEach(el => {
-                    el.classList.remove('drag-over');
-                });
-                document.querySelectorAll('.drag-over-bracket').forEach(el => {
-                    el.classList.remove('drag-over-bracket');
-                });
-            }
-            
-            isDragging = false;
-            draggedTask = null;
-            draggedFrom = null;
-        }
-
-        function handleDragOver(e, bracketIndex, taskIndex) {
-            if (!isDragging || !draggedTask) return;
-            
-            e.preventDefault();
-            
-            // Remove all previous drag-over classes
-            document.querySelectorAll('.drag-over').forEach(el => {
-                el.classList.remove('drag-over');
-            });
-            
-            const taskItem = e.target.closest('.task-item');
-            if (taskItem && (draggedTask.bracketIndex !== bracketIndex || draggedTask.taskIndex !== taskIndex)) {
-                taskItem.classList.add('drag-over');
+                cancelMove();
             }
         }
 
-        function handleDragOverBracket(e, bracketIndex) {
-            if (!isDragging || !draggedTask) return;
-            
-            e.preventDefault();
-            
-            document.querySelectorAll('.drag-over-bracket').forEach(el => {
-                el.classList.remove('drag-over-bracket');
-            });
-            
-            const bracketSection = e.target.closest('.bracket-section');
-            if (bracketSection && draggedTask.bracketIndex !== bracketIndex) {
-                bracketSection.classList.add('drag-over-bracket');
-            }
-        }
-
-        function handleDrop(e, targetBracket, targetTask) {
-            if (!isDragging || !draggedTask) return;
-            
-            e.preventDefault();
+        function editTaskText(e, bi, ti) {
             e.stopPropagation();
-            
-            const task = brackets[draggedTask.bracketIndex].tasks[draggedTask.taskIndex];
-            
-            // Remove from original position
-            brackets[draggedTask.bracketIndex].tasks.splice(draggedTask.taskIndex, 1);
-            
-            // Add to new position
-            if (targetBracket === draggedTask.bracketIndex && targetTask > draggedTask.taskIndex) {
-                targetTask--;
-            }
-            brackets[targetBracket].tasks.splice(targetTask, 0, task);
-            
-            checkBracketCompletion(draggedTask.bracketIndex);
-            checkBracketCompletion(targetBracket);
-            
-            // Haptic feedback
-            if (navigator.vibrate) {
-                navigator.vibrate(30);
-            }
-            
-            saveData();
-            render();
-            
-            endDrag(e);
-        }
-
-        function handleDropOnBracket(e, targetBracket) {
-            if (!isDragging || !draggedTask) return;
-            
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const task = brackets[draggedTask.bracketIndex].tasks[draggedTask.taskIndex];
-            
-            // Remove from original position
-            brackets[draggedTask.bracketIndex].tasks.splice(draggedTask.taskIndex, 1);
-            
-            // Add to end of target bracket
-            brackets[targetBracket].tasks.push(task);
-            
-            checkBracketCompletion(draggedTask.bracketIndex);
-            checkBracketCompletion(targetBracket);
-            
-            // Haptic feedback
-            if (navigator.vibrate) {
-                navigator.vibrate(30);
-            }
-            
-            saveData();
-            render();
-            
-            endDrag(e);
-        }
-
-        function editTaskText(e, bracketIndex, taskIndex) {
-            if (isDragging) return;
-            
-            e.stopPropagation();
-            
-            const span = e.target;
-            const currentText = brackets[bracketIndex].tasks[taskIndex].text;
-            
-            span.contentEditable = true;
-            span.classList.add('editing');
-            span.focus();
-            
-            // Select all text
-            const range = document.createRange();
-            range.selectNodeContents(span);
-            const sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
-            
-            const saveEdit = () => {
-                const newText = span.textContent.trim();
-                span.contentEditable = false;
-                span.classList.remove('editing');
-                
-                if (newText && newText !== currentText) {
-                    brackets[bracketIndex].tasks[taskIndex].text = newText;
-                    saveData();
-                    render();
-                } else {
-                    span.textContent = currentText;
-                }
+            const s = e.target, ct = brackets[bi].tasks[ti].text;
+            s.contentEditable = true; s.classList.add('editing'); s.focus();
+            const r = document.createRange(); r.selectNodeContents(s);
+            const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+            const save = () => {
+                const nt = s.textContent.trim();
+                s.contentEditable = false; s.classList.remove('editing');
+                if (nt && nt !== ct) { brackets[bi].tasks[ti].text = nt; saveData(); render(); } else { s.textContent = ct; }
             };
-            
-            const handleBlur = () => {
-                saveEdit();
+            const hb = () => save();
+            const hk = (ev) => {
+                if (ev.key === 'Enter') { ev.preventDefault(); s.blur(); }
+                else if (ev.key === 'Escape') { s.textContent = ct; s.contentEditable = false; s.classList.remove('editing'); s.removeEventListener('blur', hb); s.removeEventListener('keydown', hk); }
             };
-            
-            const handleKeydown = (event) => {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    span.blur();
-                } else if (event.key === 'Escape') {
-                    span.textContent = currentText;
-                    span.contentEditable = false;
-                    span.classList.remove('editing');
-                    span.removeEventListener('blur', handleBlur);
-                    span.removeEventListener('keydown', handleKeydown);
-                }
-            };
-            
-            span.addEventListener('blur', handleBlur, { once: true });
-            span.addEventListener('keydown', handleKeydown);
+            s.addEventListener('blur', hb, { once: true }); s.addEventListener('keydown', hk);
         }
 
-        function toggleTask(bracketIndex, taskIndex) {
-            brackets[bracketIndex].tasks[taskIndex].completed = !brackets[bracketIndex].tasks[taskIndex].completed;
-            checkBracketCompletion(bracketIndex);
-            saveData();
-            render();
+        function toggleTask(bi, ti) { brackets[bi].tasks[ti].completed = !brackets[bi].tasks[ti].completed; checkBracketCompletion(bi); saveData(); render(); }
+        function checkBracketCompletion(bi) {
+            const b = brackets[bi], ac = b.tasks.length > 0 && b.tasks.every(t => t.completed);
+            if (ac && !b.completed) { b.completed = true; checkRankUp(); }
         }
-
-        function checkBracketCompletion(bracketIndex) {
-            const bracket = brackets[bracketIndex];
-            const allCompleted = bracket.tasks.length > 0 && bracket.tasks.every(t => t.completed);
-            
-            if (allCompleted && !bracket.completed) {
-                bracket.completed = true;
-                checkRankUp();
-            }
-        }
-
         function checkRankUp() {
-            const completedBrackets = brackets.filter(b => b.completed).length;
-            
-            if (completedBrackets > currentRank) {
-                currentRank = completedBrackets;
-                showRankUp(currentRank);
-            }
+            const cb = brackets.filter(b => b.completed).length;
+            if (cb > currentRank) { currentRank = cb; showRankUp(currentRank); }
         }
-
-        function showRankUp(rankIndex) {
-            const animation = document.getElementById('rankUpAnimation');
-            const rankText = document.getElementById('newRankName');
-            const insigniaContainer = document.getElementById('newRankInsignia');
-            
-            rankText.textContent = ranks[rankIndex].name;
-            insigniaContainer.innerHTML = '';
-            insigniaContainer.appendChild(drawRankInsignia(ranks[rankIndex]));
-            
-            animation.style.display = 'flex';
+        function showRankUp(ri) {
+            const a = document.getElementById('rankUpAnimation'), rn = document.getElementById('newRankName'), ic = document.getElementById('newRankInsignia');
+            rn.textContent = ranks[ri].name; ic.innerHTML = ''; ic.appendChild(drawRankInsignia(ranks[ri]));
+            a.style.display = 'flex';
         }
-
-        function closeRankUp() {
-            document.getElementById('rankUpAnimation').style.display = 'none';
-        }
+        function closeRankUp() { document.getElementById('rankUpAnimation').style.display = 'none'; }
 
         function render() {
-            const container = document.getElementById('bracketsContainer');
-            const completedBrackets = brackets.filter(b => b.completed).length;
-            
-            const rankDisplay = document.getElementById('rankDisplay');
-            rankDisplay.innerHTML = '';
-            rankDisplay.appendChild(drawRankInsignia(ranks[currentRank]));
-            
-            const rankName = document.createElement('div');
-            rankName.textContent = ranks[currentRank].name;
-            rankName.style.fontSize = '28px';
-            rankName.style.fontWeight = 'bold';
-            rankName.style.textShadow = '2px 2px 4px rgba(0,0,0,0.8)';
-            rankDisplay.appendChild(rankName);
-            
-            const progress = document.createElement('div');
-            progress.className = 'rank-progress';
-            progress.textContent = `${completedBrackets}/${brackets.length} brackets completed`;
-            rankDisplay.appendChild(progress);
+            const c = document.getElementById('bracketsContainer'), cb = brackets.filter(b => b.completed).length;
+            const rd = document.getElementById('rankDisplay'); rd.innerHTML = ''; rd.appendChild(drawRankInsignia(ranks[currentRank]));
+            const rn = document.createElement('div'); rn.textContent = ranks[currentRank].name; rn.style.fontSize = '28px'; rn.style.fontWeight = 'bold'; rn.style.textShadow = '2px 2px 4px rgba(0,0,0,0.8)'; rd.appendChild(rn);
+            const p = document.createElement('div'); p.className = 'rank-progress'; p.textContent = `${cb}/${brackets.length} brackets completed`; rd.appendChild(p);
 
-            container.innerHTML = brackets.map((bracket, bIndex) => {
-                const insigniaDiv = document.createElement('div');
-                insigniaDiv.appendChild(drawRankInsignia(ranks[bracket.rank], 40));
-                
-                return `
-                <div class="bracket-section" 
-                     onmouseover="handleDragOverBracket(event, ${bIndex})"
-                     ontouchstart="handleDragOverBracket(event, ${bIndex})"
-                     ondrop="handleDropOnBracket(event, ${bIndex})"
-                     ondragover="event.preventDefault()">
+            c.innerHTML = brackets.map((b, bi) => `
+                <div class="bracket-section">
                     <div class="bracket-header">
-                        <div class="bracket-title">
-                            <div id="bracket-insignia-${bIndex}"></div>
-                            <span>${ranks[bracket.rank].name}</span>
-                        </div>
-                        <span class="bracket-progress">
-                            ${bracket.tasks.filter(t => t.completed).length}/${bracket.tasks.length} tasks
-                            ${bracket.completed ? '✓' : ''}
-                        </span>
+                        <div class="bracket-title"><div id="bracket-insignia-${bi}"></div><span>${ranks[b.rank].name}</span></div>
+                        <span class="bracket-progress">${b.tasks.filter(t => t.completed).length}/${b.tasks.length} tasks ${b.completed ? '✓' : ''}</span>
                     </div>
                     <ul class="task-list">
-                        ${bracket.tasks.map((task, tIndex) => `
-                            <li class="task-item ${task.completed ? 'completed' : ''}"
-                                data-bracket="${bIndex}"
-                                data-task="${tIndex}">
-                                <div class="drag-handle" data-drag-handle="true">
-                                    <div class="drag-dot"></div>
-                                    <div class="drag-dot"></div>
-                                    <div class="drag-dot"></div>
+                        ${b.tasks.map((t, ti) => `
+                            <li class="task-item ${t.completed ? 'completed' : ''}">
+                                <input type="checkbox" class="task-checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTask(${bi}, ${ti})">
+                                <span class="task-text" onclick="editTaskText(event, ${bi}, ${ti})">${t.text}</span>
+                                <div class="task-controls">
+                                    <button class="arrow-btn" onclick="moveTaskUp(${bi}, ${ti})" ${ti === 0 ? 'disabled' : ''}>▲</button>
+                                    <button class="arrow-btn" onclick="moveTaskDown(${bi}, ${ti})" ${ti === b.tasks.length - 1 ? 'disabled' : ''}>▼</button>
+                                    <button class="move-btn" onclick="openMoveModal(${bi}, ${ti})">⇅</button>
+                                    <button class="delete-btn" onclick="deleteTask(${bi}, ${ti})">×</button>
                                 </div>
-                                <input type="checkbox" class="task-checkbox" 
-                                    ${task.completed ? 'checked' : ''} 
-                                    onchange="toggleTask(${bIndex}, ${tIndex})">
-                                <span class="task-text" 
-                                      onclick="editTaskText(event, ${bIndex}, ${tIndex})">${task.text}</span>
-                                <button class="delete-btn" 
-                                        onclick="deleteTask(${bIndex}, ${tIndex})">×</button>
                             </li>
                         `).join('')}
                     </ul>
                 </div>
-                `;
-            }).join('');
+            `).join('');
             
-            brackets.forEach((bracket, bIndex) => {
-                const insigniaContainer = document.getElementById(`bracket-insignia-${bIndex}`);
-                if (insigniaContainer) {
-                    insigniaContainer.appendChild(drawRankInsignia(ranks[bracket.rank], 40));
-                }
-            });
-            
-            // Add drag event listeners
-            document.querySelectorAll('.drag-handle').forEach(handle => {
-                const item = handle.closest('.task-item');
-                const bIndex = parseInt(item.dataset.bracket);
-                const tIndex = parseInt(item.dataset.task);
-                
-                handle.addEventListener('mousedown', (e) => startDrag(e, bIndex, tIndex));
-                handle.addEventListener('touchstart', (e) => startDrag(e, bIndex, tIndex), { passive: false });
-                handle.addEventListener('mouseup', endDrag);
-                handle.addEventListener('touchend', endDrag);
-            });
-            
-            document.querySelectorAll('.task-item').forEach(item => {
-                const bIndex = parseInt(item.dataset.bracket);
-                const tIndex = parseInt(item.dataset.task);
-                
-                item.addEventListener('mousemove', (e) => handleDragOver(e, bIndex, tIndex));
-                item.addEventListener('touchmove', (e) => handleDragOver(e, bIndex, tIndex), { passive: false });
-                item.addEventListener('drop', (e) => handleDrop(e, bIndex, tIndex));
-                item.addEventListener('dragover', (e) => e.preventDefault());
-            });
-            
-            document.querySelectorAll('.bracket-section').forEach(section => {
-                const bIndex = parseInt(section.querySelector('.task-item')?.dataset.bracket || -1);
-                if (bIndex >= 0) {
-                    section.addEventListener('mouseover', (e) => handleDragOverBracket(e, bIndex));
-                    section.addEventListener('touchstart', (e) => handleDragOverBracket(e, bIndex));
-                    section.addEventListener('drop', (e) => handleDropOnBracket(e, bIndex));
-                    section.addEventListener('dragover', (e) => e.preventDefault());
-                }
+            brackets.forEach((b, bi) => {
+                const ic = document.getElementById(`bracket-insignia-${bi}`);
+                if (ic) ic.appendChild(drawRankInsignia(ranks[b.rank], 40));
             });
         }
 
-        loadData();
-        populateSelect();
-        render();
+        loadData(); populateSelect(); render();
     </script>
 </body>
 </html>
