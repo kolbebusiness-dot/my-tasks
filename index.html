@@ -367,30 +367,6 @@
         </div>
     </div>
 
-    <!-- Edit Modal -->
-    <div class="modal" id="editModal">
-        <div class="modal-content">
-            <h3>Edit Task</h3>
-            <input type="text" id="editInput" placeholder="Edit task text...">
-            <div class="modal-buttons">
-                <button onclick="cancelEdit()">Cancel</button>
-                <button onclick="saveEdit()">Save</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Move Modal -->
-    <div class="modal" id="moveModal">
-        <div class="modal-content">
-            <h3>Move Task To</h3>
-            <select id="moveBracketSelect"></select>
-            <div class="modal-buttons">
-                <button onclick="cancelMove()">Cancel</button>
-                <button onclick="saveMove()">Move</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         const ranks = [
             { name: 'No Insignia', stripes: 0 },
@@ -422,8 +398,10 @@
             { name: 'Bracket 12', rank: 12, tasks: [], completed: false }
         ];
         let currentRank = 0;
-        let editingTask = null;
-        let movingTask = null;
+        let draggedTask = null;
+        let draggedFrom = null;
+        let longPressTimer = null;
+        let isDragging = false;
 
         function saveData() {
             const data = {
@@ -672,92 +650,177 @@
             }
         }
 
-        function moveTaskUp(bracketIndex, taskIndex) {
-            if (taskIndex > 0) {
-                const temp = brackets[bracketIndex].tasks[taskIndex];
-                brackets[bracketIndex].tasks[taskIndex] = brackets[bracketIndex].tasks[taskIndex - 1];
-                brackets[bracketIndex].tasks[taskIndex - 1] = temp;
-                saveData();
-                render();
-            }
-        }
-
-        function moveTaskDown(bracketIndex, taskIndex) {
-            if (taskIndex < brackets[bracketIndex].tasks.length - 1) {
-                const temp = brackets[bracketIndex].tasks[taskIndex];
-                brackets[bracketIndex].tasks[taskIndex] = brackets[bracketIndex].tasks[taskIndex + 1];
-                brackets[bracketIndex].tasks[taskIndex + 1] = temp;
-                saveData();
-                render();
-            }
-        }
-
-        function openEditModal(bracketIndex, taskIndex) {
-            editingTask = { bracketIndex, taskIndex };
-            const task = brackets[bracketIndex].tasks[taskIndex];
-            document.getElementById('editInput').value = task.text;
-            document.getElementById('editModal').style.display = 'flex';
-        }
-
-        function cancelEdit() {
-            editingTask = null;
-            document.getElementById('editModal').style.display = 'none';
-        }
-
-        function saveEdit() {
-            if (editingTask) {
-                const newText = document.getElementById('editInput').value.trim();
-                if (newText) {
-                    brackets[editingTask.bracketIndex].tasks[editingTask.taskIndex].text = newText;
-                    saveData();
-                    render();
-                }
-                cancelEdit();
-            }
-        }
-
-        function openMoveModal(bracketIndex, taskIndex) {
-            movingTask = { bracketIndex, taskIndex };
+        function startDrag(e, bracketIndex, taskIndex) {
+            e.preventDefault();
             
-            const select = document.getElementById('moveBracketSelect');
-            select.innerHTML = '';
-            
-            brackets.forEach((bracket, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = ranks[bracket.rank].name;
-                if (index === bracketIndex) {
-                    option.textContent += ' (current)';
+            longPressTimer = setTimeout(() => {
+                isDragging = true;
+                draggedTask = { bracketIndex, taskIndex };
+                draggedFrom = { bracketIndex, taskIndex };
+                
+                const taskItem = e.target.closest('.task-item');
+                if (taskItem) {
+                    taskItem.classList.add('dragging');
                 }
-                select.appendChild(option);
+                
+                // Haptic feedback if available
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            }, 500); // 500ms long press
+        }
+
+        function endDrag(e) {
+            clearTimeout(longPressTimer);
+            
+            if (isDragging && draggedTask) {
+                const taskItem = e.target.closest('.task-item');
+                if (taskItem) {
+                    taskItem.classList.remove('dragging');
+                }
+                
+                document.querySelectorAll('.drag-over').forEach(el => {
+                    el.classList.remove('drag-over');
+                });
+                document.querySelectorAll('.drag-over-bracket').forEach(el => {
+                    el.classList.remove('drag-over-bracket');
+                });
+            }
+            
+            isDragging = false;
+            draggedTask = null;
+            draggedFrom = null;
+        }
+
+        function handleDragOver(e, bracketIndex, taskIndex) {
+            if (!isDragging || !draggedTask) return;
+            
+            e.preventDefault();
+            
+            // Remove all previous drag-over classes
+            document.querySelectorAll('.drag-over').forEach(el => {
+                el.classList.remove('drag-over');
             });
             
-            select.value = bracketIndex;
-            document.getElementById('moveModal').style.display = 'flex';
+            const taskItem = e.target.closest('.task-item');
+            if (taskItem && (draggedTask.bracketIndex !== bracketIndex || draggedTask.taskIndex !== taskIndex)) {
+                taskItem.classList.add('drag-over');
+            }
         }
 
-        function cancelMove() {
-            movingTask = null;
-            document.getElementById('moveModal').style.display = 'none';
+        function handleDragOverBracket(e, bracketIndex) {
+            if (!isDragging || !draggedTask) return;
+            
+            e.preventDefault();
+            
+            document.querySelectorAll('.drag-over-bracket').forEach(el => {
+                el.classList.remove('drag-over-bracket');
+            });
+            
+            const bracketSection = e.target.closest('.bracket-section');
+            if (bracketSection && draggedTask.bracketIndex !== bracketIndex) {
+                bracketSection.classList.add('drag-over-bracket');
+            }
         }
 
-        function saveMove() {
-            if (movingTask) {
-                const targetBracket = parseInt(document.getElementById('moveBracketSelect').value);
+        function handleDrop(e, targetBracket, targetTask) {
+            if (!isDragging || !draggedTask) return;
+            
+            e.preventDefault();
+            
+            const task = brackets[draggedTask.bracketIndex].tasks[draggedTask.taskIndex];
+            
+            // Remove from original position
+            brackets[draggedTask.bracketIndex].tasks.splice(draggedTask.taskIndex, 1);
+            
+            // Add to new position
+            if (targetBracket === draggedTask.bracketIndex && targetTask > draggedTask.taskIndex) {
+                targetTask--;
+            }
+            brackets[targetBracket].tasks.splice(targetTask, 0, task);
+            
+            checkBracketCompletion(draggedTask.bracketIndex);
+            checkBracketCompletion(targetBracket);
+            
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(30);
+            }
+            
+            saveData();
+            render();
+            
+            endDrag(e);
+        }
+
+        function handleDropOnBracket(e, targetBracket) {
+            if (!isDragging || !draggedTask) return;
+            
+            e.preventDefault();
+            
+            const task = brackets[draggedTask.bracketIndex].tasks[draggedTask.taskIndex];
+            
+            // Remove from original position
+            brackets[draggedTask.bracketIndex].tasks.splice(draggedTask.taskIndex, 1);
+            
+            // Add to end of target bracket
+            brackets[targetBracket].tasks.push(task);
+            
+            checkBracketCompletion(draggedTask.bracketIndex);
+            checkBracketCompletion(targetBracket);
+            
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(30);
+            }
+            
+            saveData();
+            render();
+            
+            endDrag(e);
+        }
+
+        function editTaskText(e, bracketIndex, taskIndex) {
+            if (isDragging) return;
+            
+            const span = e.target;
+            const currentText = brackets[bracketIndex].tasks[taskIndex].text;
+            
+            span.contentEditable = true;
+            span.classList.add('editing');
+            span.focus();
+            
+            // Select all text
+            const range = document.createRange();
+            range.selectNodeContents(span);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            
+            const saveEdit = () => {
+                const newText = span.textContent.trim();
+                span.contentEditable = false;
+                span.classList.remove('editing');
                 
-                if (targetBracket !== movingTask.bracketIndex) {
-                    const task = brackets[movingTask.bracketIndex].tasks[movingTask.taskIndex];
-                    brackets[movingTask.bracketIndex].tasks.splice(movingTask.taskIndex, 1);
-                    brackets[targetBracket].tasks.push(task);
-                    
-                    checkBracketCompletion(movingTask.bracketIndex);
-                    checkBracketCompletion(targetBracket);
-                    
+                if (newText && newText !== currentText) {
+                    brackets[bracketIndex].tasks[taskIndex].text = newText;
                     saveData();
                     render();
+                } else {
+                    span.textContent = currentText;
                 }
-                cancelMove();
-            }
+            };
+            
+            span.addEventListener('blur', saveEdit, { once: true });
+            span.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    span.blur();
+                } else if (event.key === 'Escape') {
+                    span.textContent = currentText;
+                    span.blur();
+                }
+            }, { once: true });
         }
 
         function toggleTask(bracketIndex, taskIndex) {
@@ -827,7 +890,11 @@
                 insigniaDiv.appendChild(drawRankInsignia(ranks[bracket.rank], 40));
                 
                 return `
-                <div class="bracket-section">
+                <div class="bracket-section" 
+                     onmouseover="handleDragOverBracket(event, ${bIndex})"
+                     ontouchstart="handleDragOverBracket(event, ${bIndex})"
+                     ondrop="handleDropOnBracket(event, ${bIndex})"
+                     ondragover="event.preventDefault()">
                     <div class="bracket-header">
                         <div class="bracket-title">
                             <div id="bracket-insignia-${bIndex}"></div>
@@ -840,20 +907,23 @@
                     </div>
                     <ul class="task-list">
                         ${bracket.tasks.map((task, tIndex) => `
-                            <li class="task-item ${task.completed ? 'completed' : ''}">
+                            <li class="task-item ${task.completed ? 'completed' : ''}"
+                                onmousedown="startDrag(event, ${bIndex}, ${tIndex})"
+                                ontouchstart="startDrag(event, ${bIndex}, ${tIndex})"
+                                onmouseup="endDrag(event)"
+                                ontouchend="endDrag(event)"
+                                onmousemove="handleDragOver(event, ${bIndex}, ${tIndex})"
+                                ontouchmove="handleDragOver(event, ${bIndex}, ${tIndex})"
+                                ondrop="handleDrop(event, ${bIndex}, ${tIndex})"
+                                ondragover="event.preventDefault()">
                                 <input type="checkbox" class="task-checkbox" 
                                     ${task.completed ? 'checked' : ''} 
-                                    onchange="toggleTask(${bIndex}, ${tIndex})">
-                                <span class="task-text">${task.text}</span>
-                                <div class="task-controls">
-                                    <button class="arrow-btn" onclick="moveTaskUp(${bIndex}, ${tIndex})" 
-                                        ${tIndex === 0 ? 'disabled' : ''}>▲</button>
-                                    <button class="arrow-btn" onclick="moveTaskDown(${bIndex}, ${tIndex})" 
-                                        ${tIndex === bracket.tasks.length - 1 ? 'disabled' : ''}>▼</button>
-                                    <button class="edit-btn" onclick="openEditModal(${bIndex}, ${tIndex})">Edit</button>
-                                    <button class="move-btn" onclick="openMoveModal(${bIndex}, ${tIndex})">Move</button>
-                                    <button class="delete-btn" onclick="deleteTask(${bIndex}, ${tIndex})">Delete</button>
-                                </div>
+                                    onchange="toggleTask(${bIndex}, ${tIndex})"
+                                    onclick="event.stopPropagation()">
+                                <span class="task-text" 
+                                      onclick="editTaskText(event, ${bIndex}, ${tIndex})">${task.text}</span>
+                                <button class="delete-btn" 
+                                        onclick="event.stopPropagation(); deleteTask(${bIndex}, ${tIndex})">×</button>
                             </li>
                         `).join('')}
                     </ul>
