@@ -477,7 +477,11 @@
 
         function render() {
             const c = document.getElementById('bracketsContainer'), cb = brackets.filter(b => b.completed).length;
-            const rd = document.getElementById('rankDisplay'); rd.innerHTML = '';
+            const rd = document.getElementById('rankDisplay'); 
+            
+            // Force complete re-render
+            rd.style.display = 'none';
+            rd.innerHTML = '';
             
             if (currentRank > 0) {
                 rd.appendChild(drawRankInsignia(ranks[currentRank]));
@@ -485,6 +489,8 @@
             
             const rn = document.createElement('div'); rn.textContent = ranks[currentRank].name; rn.style.fontSize = '28px'; rn.style.fontWeight = 'bold'; rn.style.textShadow = '2px 2px 4px rgba(0,0,0,0.8)'; rd.appendChild(rn);
             const p = document.createElement('div'); p.className = 'rank-progress'; p.textContent = `${cb}/${brackets.length} brackets completed`; rd.appendChild(p);
+            
+            rd.style.display = 'flex';
 
             c.innerHTML = brackets.map((b, bi) => `
                 <div class="bracket-section">
