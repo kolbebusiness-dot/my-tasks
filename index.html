@@ -502,15 +502,7 @@
             }
 
             if (rank.name === 'No Insignia') {
-                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('x', '40');
-                text.setAttribute('y', '45');
-                text.setAttribute('text-anchor', 'middle');
-                text.setAttribute('fill', '#d4af37');
-                text.setAttribute('font-size', size > 50 ? '10' : '7');
-                text.setAttribute('font-weight', 'bold');
-                text.textContent = 'NO INSIGNIA';
-                svg.appendChild(text);
+                // Return empty SVG for No Insignia rank
                 return svg;
             }
 
