@@ -59,8 +59,13 @@
         }
         .input-section {
             display: flex;
+            flex-direction: column;
             gap: 10px;
             margin-bottom: 20px;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
         }
         input[type="text"] {
             flex: 1;
@@ -69,6 +74,7 @@
             border-radius: 6px;
             font-size: 16px;
             transition: border-color 0.3s;
+            min-width: 0;
         }
         input[type="text"]:focus {
             outline: none;
@@ -81,18 +87,7 @@
             font-size: 16px;
             background: white;
             cursor: pointer;
-            min-width: 200px;
-        }
-        .bracket-select-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .small-insignia {
-            width: 30px;
-            height: 30px;
-            vertical-align: middle;
-            margin-right: 8px;
+            width: 100%;
         }
         button {
             padding: 12px 24px;
@@ -103,9 +98,18 @@
             font-size: 16px;
             cursor: pointer;
             transition: background 0.3s;
+            white-space: nowrap;
         }
         button:hover {
             background: #5568d3;
+        }
+        .reset-btn {
+            background: #ff6b6b;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .reset-btn:hover {
+            background: #ee5a52;
         }
         .bracket-section {
             margin-bottom: 25px;
@@ -228,22 +232,12 @@
         </div>
 
         <div class="input-section">
-            <input type="text" id="taskInput" placeholder="Enter task...">
-            <select id="bracketSelect">
-                <option value="0">Bracket 1 → Private</option>
-                <option value="1">Bracket 2 → Private First Class</option>
-                <option value="2">Bracket 3 → Specialist</option>
-                <option value="3">Bracket 4 → Corporal</option>
-                <option value="4">Bracket 5 → Sergeant</option>
-                <option value="5">Bracket 6 → Staff Sergeant</option>
-                <option value="6">Bracket 7 → Sergeant First Class</option>
-                <option value="7">Bracket 8 → Master Sergeant</option>
-                <option value="8">Bracket 9 → First Sergeant</option>
-                <option value="9">Bracket 10 → Sergeant Major</option>
-                <option value="10">Bracket 11 → Command Sergeant Major</option>
-                <option value="11">Bracket 12 → Sergeant Major of the Army</option>
-            </select>
-            <button onclick="addTask()">Add</button>
+            <div class="input-row">
+                <input type="text" id="taskInput" placeholder="Enter task...">
+                <button onclick="addTask()">Add</button>
+            </div>
+            <select id="bracketSelect"></select>
+            <button class="reset-btn" onclick="resetAll()">Reset All Data</button>
         </div>
 
         <div id="bracketsContainer"></div>
@@ -304,6 +298,32 @@
                 const data = JSON.parse(saved);
                 brackets = data.brackets;
                 currentRank = data.currentRank;
+            }
+        }
+
+        function resetAll() {
+            if (confirm('Are you sure you want to delete ALL tasks and reset your rank to No Insignia? This cannot be undone.')) {
+                localStorage.removeItem('taskRanksData');
+                
+                // Reset to initial state
+                brackets = [
+                    { name: 'Bracket 1', rank: 1, tasks: [], completed: false },
+                    { name: 'Bracket 2', rank: 2, tasks: [], completed: false },
+                    { name: 'Bracket 3', rank: 3, tasks: [], completed: false },
+                    { name: 'Bracket 4', rank: 4, tasks: [], completed: false },
+                    { name: 'Bracket 5', rank: 5, tasks: [], completed: false },
+                    { name: 'Bracket 6', rank: 6, tasks: [], completed: false },
+                    { name: 'Bracket 7', rank: 7, tasks: [], completed: false },
+                    { name: 'Bracket 8', rank: 8, tasks: [], completed: false },
+                    { name: 'Bracket 9', rank: 9, tasks: [], completed: false },
+                    { name: 'Bracket 10', rank: 10, tasks: [], completed: false },
+                    { name: 'Bracket 11', rank: 11, tasks: [], completed: false },
+                    { name: 'Bracket 12', rank: 12, tasks: [], completed: false }
+                ];
+                currentRank = 0;
+                
+                render();
+                alert('All data has been reset!');
             }
         }
 
