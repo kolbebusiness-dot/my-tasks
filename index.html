@@ -651,21 +651,15 @@
         }
 
         function startDrag(e, bracketIndex, taskIndex) {
-            // Don't start drag if clicking on checkbox, text, or delete button
-            if (e.target.classList.contains('task-checkbox') || 
-                e.target.classList.contains('task-text') || 
-                e.target.classList.contains('delete-btn')) {
-                return;
-            }
-            
             e.preventDefault();
+            e.stopPropagation();
             
             longPressTimer = setTimeout(() => {
                 isDragging = true;
                 draggedTask = { bracketIndex, taskIndex };
                 draggedFrom = { bracketIndex, taskIndex };
                 
-                const taskItem = e.target.closest('.task-item');
+                const taskItem = document.querySelector(`[data-bracket="${bracketIndex}"][data-task="${taskIndex}"]`);
                 if (taskItem) {
                     taskItem.classList.add('dragging');
                 }
@@ -674,7 +668,7 @@
                 if (navigator.vibrate) {
                     navigator.vibrate(50);
                 }
-            }, 500); // 500ms long press
+            }, 300); // Reduced to 300ms for faster response
         }
 
         function endDrag(e) {
@@ -930,6 +924,11 @@
                             <li class="task-item ${task.completed ? 'completed' : ''}"
                                 data-bracket="${bIndex}"
                                 data-task="${tIndex}">
+                                <div class="drag-handle" data-drag-handle="true">
+                                    <div class="drag-dot"></div>
+                                    <div class="drag-dot"></div>
+                                    <div class="drag-dot"></div>
+                                </div>
                                 <input type="checkbox" class="task-checkbox" 
                                     ${task.completed ? 'checked' : ''} 
                                     onchange="toggleTask(${bIndex}, ${tIndex})">
@@ -952,16 +951,23 @@
             });
             
             // Add drag event listeners
+            document.querySelectorAll('.drag-handle').forEach(handle => {
+                const item = handle.closest('.task-item');
+                const bIndex = parseInt(item.dataset.bracket);
+                const tIndex = parseInt(item.dataset.task);
+                
+                handle.addEventListener('mousedown', (e) => startDrag(e, bIndex, tIndex));
+                handle.addEventListener('touchstart', (e) => startDrag(e, bIndex, tIndex), { passive: false });
+                handle.addEventListener('mouseup', endDrag);
+                handle.addEventListener('touchend', endDrag);
+            });
+            
             document.querySelectorAll('.task-item').forEach(item => {
                 const bIndex = parseInt(item.dataset.bracket);
                 const tIndex = parseInt(item.dataset.task);
                 
-                item.addEventListener('mousedown', (e) => startDrag(e, bIndex, tIndex));
-                item.addEventListener('touchstart', (e) => startDrag(e, bIndex, tIndex));
-                item.addEventListener('mouseup', endDrag);
-                item.addEventListener('touchend', endDrag);
                 item.addEventListener('mousemove', (e) => handleDragOver(e, bIndex, tIndex));
-                item.addEventListener('touchmove', (e) => handleDragOver(e, bIndex, tIndex));
+                item.addEventListener('touchmove', (e) => handleDragOver(e, bIndex, tIndex), { passive: false });
                 item.addEventListener('drop', (e) => handleDrop(e, bIndex, tIndex));
                 item.addEventListener('dragover', (e) => e.preventDefault());
             });
